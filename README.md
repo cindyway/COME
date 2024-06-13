@@ -7,7 +7,6 @@ This source code repository aims to reproduce the approach introduced in the pap
 - [Installation](#installation)
 - [Data](#data)
 - [Model Training](#modeltraining)
-- [Model Evaluation](#modelevaluation)
 - [Examples](#examples)
 
 
