@@ -1,6 +1,6 @@
 # COME
 
-This source code repository aims to reproduce the approach introduced in the paper titled "COME: contrastive mapping learning for spatial reconstruction of scRNA-seq data."
+This source code repository aims to reproduce the approach introduced in the paper "COME: contrastive mapping learning for spatial reconstruction of scRNA-seq data."
 
 ## Table of Contents
 
@@ -18,11 +18,11 @@ The installation requirements and dependencies for the project. For example:
 - PyTorch 1.6+
 - Other dependencies
 
-You can also provide installation instructions like:
-
 ```bash
-pip install -r requirements.txt
+conda create python=3.7 -n COME
+conda activate COME
 ```
+Make sure to install the corresponding PyTorch CUDA version by following the instructions on the [official PyTorch website](https://pytorch.org/get-started/locally/)
 
 ## Data
 
@@ -40,6 +40,6 @@ Adjustable (hyper)parameters can be customized in the configure.py file.
 
 ## Examples
 
-For utilizing the output mapping for gene reconstruction and spot deconvolution, please refer to the Tutorial.py script.
+To use the output mapping for gene reconstruction and spot deconvolution, please look at the Tutorial.py script.
 
 
