@@ -26,7 +26,9 @@ Make sure to install the corresponding PyTorch CUDA version by following the ins
 
 ## Data
 
-The paper's utilized dataset is available in h5ad files on [Dropbox](https://www.dropbox.com/scl/fi/3ywqslcj18kflgppnwwhq/data.zip?rlkey=aghlshs3mos97g94j8gl443zm&st=ocok6ab1&dl=0). The raw data can be obtained from the references cited in the paper. 
+<!--- The paper's utilized dataset is available in h5ad files on [Dropbox](https://www.dropbox.com/scl/fi/3ywqslcj18kflgppnwwhq/data.zip?rlkey=aghlshs3mos97g94j8gl443zm&st=ocok6ab1&dl=0). --->
+Our input data is in the standard format of [anndata format](https://anndata.readthedocs.io/en/latest/tutorials/notebooks/getting-started.html), stored as h5ad files. 
+All the data can be obtained from the references cited in the paper. 
 
 ## Model Training
 To replicate the COME model, please execute the train_eval.py script.
