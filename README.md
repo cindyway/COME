@@ -42,7 +42,7 @@ Adjustable (hyper)parameters can be customized in the configure.py file.
 
 ## Examples
 
-To use the output mapping for gene reconstruction and spot deconvolution, please take a look at the [Tutorial.py](https://github.com/cindyway/COME/blob/main/Tutorial.ipynb) script.
+To use the output mapping for gene reconstruction and spot deconvolution, please take a look at the [Tutorial.ipynb](https://github.com/cindyway/COME/blob/main/Tutorial.ipynb) script.
 
 ## Acknowledgement
 Some implementations of metrics and the visualization in this Repo are based on [SpatialBenchmarking](https://github.com/QuKunLab/SpatialBenchmarking) and [GraphST](https://github.com/JinmiaoChenLab/GraphST)
