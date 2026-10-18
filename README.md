@@ -35,7 +35,7 @@ To replicate the COME model, please execute the train_eval.py script.
 
 For instance: 
 ```bash
-python train_val.py --pretrain --train
+python train_eval.py --pretrain --train
 ```
 Adjustable (hyper)parameters can be customized in the configure.py file.
 
