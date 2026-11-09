@@ -193,7 +193,7 @@ class count:
                 raw_col = raw.loc[:, label]
                 impute_col = impute.loc[:, label]
 
-                M = [raw_col.max(), impute_col.max()][raw_col.max() > impute_col.max()]
+                M = min(raw_col.max(), impute_col.max())
 
                 raw_col_2 = np.array(raw_col)
                 raw_col_2 = raw_col_2.reshape(raw_col_2.shape[0], 1)
