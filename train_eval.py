@@ -15,7 +15,6 @@ import random
 from sklearn.model_selection import KFold
 from GenesMetrics import count
 
-import datetime
 import os
 
 
@@ -26,8 +25,6 @@ parser.add_argument('--pretrain', action='store_false')
 parser.add_argument('--train', action='store_false')
 parser.add_argument('--patience', type=int, default=10)
 
-args = parser.parse_args()
-
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 dataset = {
@@ -37,15 +34,12 @@ dataset = {
     3: "PDAC",
     4: "STARmap",
 }
-data_name = dataset[args.dataset]
-
-current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-config = get_default_config(data_name)
-pre_name = '_'.join(str(dim) for dim in config['dims'][1:])
-
-def main():
+def main(args):
+    data_name = dataset[args.dataset]
 
     random.seed(48)
+    np.random.seed(48)
+    torch.manual_seed(48)
     ktimes = 10
     cv = KFold(n_splits=ktimes, shuffle=False)
 
@@ -105,7 +99,7 @@ def main():
 
         print (args.pretrain)
         if args.pretrain:
-            pretrain_ae(model.ae, optimizer_pre, np.concatenate((x1, x2), axis=0), config, pretrain_path)
+            pretrain_ae(model.ae, optimizer_pre, np.concatenate((x1, x2), axis=0), config, pretrain_path, patience=args.patience)
         model.ae.load_state_dict(torch.load(pretrain_path))
         model_path = "result/%s_model.pkl" % (data_name)
         model.train()
@@ -135,12 +129,12 @@ def predict_result(rna,OT,genes_names):
     return dataset_reconst
 
 
-def pretrain_ae(model, optimizer, train_data, config, model_path):
+def pretrain_ae(model, optimizer, train_data, config, model_path, patience=10):
     print('\n===========> pretraining... <===========')
     train_dataset = TrainDataset(train_data)
     batch_sampler = Data_Sampler(train_dataset, shuffle=True, batch_size=config['batch_size'], drop_last=False)
     train_loader = DataLoader(dataset=train_dataset, batch_sampler=batch_sampler)
-    early_stopper = EarlyStopper(patience=args.patience, min_delta=0)
+    early_stopper = EarlyStopper(patience=patience, min_delta=0)
     history = []
 
     model.train()
@@ -174,7 +168,6 @@ def train(model, optimizer, x1, x2,type_mask,config, model_path):
         x2 = torch.from_numpy(x2).to(device)
     # training
     print('\n===========> training... <===========')
-    early_stopper = EarlyStopper(patience=args.patience, min_delta=0)
     for epoch in range(config['epochs']):
         current_loss = 0
         x1_hat, x2_hat, z1, z2, z2_map = model(x1, x2)
@@ -198,4 +191,4 @@ def train(model, optimizer, x1, x2,type_mask,config, model_path):
 
 
 if __name__ == '__main__':
-    main()
+    main(parser.parse_args())
