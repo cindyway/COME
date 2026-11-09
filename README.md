@@ -37,7 +37,6 @@ For instance:
 ```bash
 python train_eval.py --dataset 0
 ```
-```
 Adjustable (hyper)parameters can be customized in the configure.py file.
 
 
