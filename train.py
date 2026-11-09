@@ -40,7 +40,6 @@ def main():
     train(model, torch.optim.Adam(model.parameters(), lr=config['lr']),
           x1, x2, type_mask, config, 'result/smFISH_full_model.pkl')
     savemat('coef/smFISH_C.mat', {'C': model.map.Coefficient.detach().cpu().numpy()})
-    print('Wrote coef/smFISH_C.mat for tutorial2026.IPYNB')
 
 
 if __name__ == '__main__':
