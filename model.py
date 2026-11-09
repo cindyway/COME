@@ -55,11 +55,9 @@ class MapNet(nn.Module):
 class Model(nn.Module):
     def __init__(self, config):
         super(Model, self).__init__()
-        # params
         self._dims = config['dims']
         self._n1 = config['num_sample1']
         self._n2 = config['num_sample2']
-        # net
         self.ae = AutoEncoder(self._dims)
         self.map = MapNet(self._n1, self._n2)
         self.tau=config['tau']
@@ -77,31 +75,16 @@ class Model(nn.Module):
 
     def st_mask(self, adj):
         '''neighbor contrastive mask'''
-        # adj = adj - torch.diag_embed(adj.diag())  # remove self-loop
-        # adj[adj > 0] = 1
-
         return adj
 
     def cross_mask(self, Coefficient, num_st,num_rna):
-
-        # if num_rows > num_cols:
-        #     max_values, max_indices = Coefficient.max(dim=1)
-        #     mask = torch.zeros_like(Coefficient)
-        #     mask[torch.arange(num_rows), max_indices] = 1
-        # else:
-        #     max_values, max_indices = Coefficient.max(dim=0)
-        #     mask = torch.zeros_like(Coefficient)
-        #     mask[max_indices, torch.arange(num_cols)] = 1
         max_values, max_indices = Coefficient.max(dim=0)
         mask = torch.zeros_like(Coefficient)
         mask[max_indices, torch.arange(num_rna)] = 1
 
         return mask
     def cell_type_mask(self, sparse_matrix):
-
         cell_type_matrix= torch.from_numpy(sparse_matrix)
-        #cell_type_matrix = cell_type_matrix - torch.diag_embed(cell_type_matrix.diag())  # remove self-loop
-
         return cell_type_matrix
 
 
@@ -109,7 +92,7 @@ class Model(nn.Module):
 
         G_pred = torch.matmul(self.map.Coefficient, x2)
         ssim_test_loss = 1 - cal_ssim(G_pred, x1, M=None)
-        ssim_test_loss_all = ssim_test_loss
+        ssim_test_loss_all = ssim_test_loss + 1 - cal_ssim(self.map.Coefficient.T @ x1, x2)
         loss_coef = torch.sum(torch.pow(self.map.Coefficient, 2))
         loss_ae = self.ae.loss_ae(x1, x1_hat) + self.ae.loss_ae(x2, x2_hat)
         loss_map = F.mse_loss(z2_map, z1, reduction='mean')
@@ -123,7 +106,7 @@ class Model(nn.Module):
         full_mask[-self._n2:, -self._n2:] =type_mask
         full_mask[-self._n2:, :self._n1] =  cross_mask.T
 
-        loss_clr=self.clr_criterion(z1,z2,mask=full_mask)
+        loss_clr=self.clr_criterion(z1,z2,mask=full_mask.to(z1.device))
 
 
         loss = loss_ae + weight_map * loss_map + loss_coef * weight_coef + ssim_test_loss_all*weight_ssim+weight_con*loss_clr
@@ -145,7 +128,6 @@ class ContrastiveLoss(nn.Module):
 
     def compute_cosine_sim(self, h1, h2):
         sim = torch.tensordot(h1.unsqueeze(1), h2.T.unsqueeze(0), dims=2)
-        # sim=torch.mm(h1, h2.t())
         return sim
 
     def mask_pos_and_neg(self, mask):
@@ -165,12 +147,10 @@ class ContrastiveLoss(nn.Module):
             mask = self.mask_correlated_samples(h1.shape[0], device=h1.device)
         positive_mask, negative_mask = self.mask_pos_and_neg(mask)
 
-        # numerator=torch.diag(torch.mm(sim_exp, positive_mask.t()))+1e-12
-        # denominator=torch.diag(torch.mm(sim_exp, (positive_mask + negative_mask).t()))+1e-12
-        numerator=torch.sum(torch.mul(sim_exp, positive_mask),dim=1)+1e-12
-        denominator=torch.sum(torch.mul(sim_exp, (positive_mask + negative_mask)),dim=1)+1e-12
+        numerator=torch.sum(torch.mul(sim_exp, positive_mask),dim=1)
+        denominator=torch.sum(torch.mul(sim_exp, (positive_mask + negative_mask)),dim=1)
 
-        loss = torch.sum(-torch.log( numerator/ denominator )) / (h_cat.shape[0])
+        loss = torch.sum(-torch.log( numerator/ denominator + 1e-12 )) / (h_cat.shape[0])
         return loss
 
 
