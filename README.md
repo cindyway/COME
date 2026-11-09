@@ -31,18 +31,21 @@ Our input data is in the standard format of [anndata format](https://anndata.rea
 All the data can be obtained from the references cited in the paper. 
 
 ## Model Training
-To replicate the COME model, please execute the train_eval.py script.
+To replicate the Gene Imputation Validation of COME model, please execute the train_eval.py script.
 
 For instance: 
 ```bash
-python train_eval.py --pretrain --train
+python train_eval.py --dataset 0
+```
 ```
 Adjustable (hyper)parameters can be customized in the configure.py file.
 
 
 ## Examples
 
-To use the output mapping for gene reconstruction and spot deconvolution, please take a look at the [Tutorial.ipynb](https://github.com/cindyway/COME/blob/main/Tutorial.ipynb) script.
+To use the output mapping for gene reconstruction and spot deconvolution, please take a look at [Tutorial.ipynb](Tutorial.ipynb).
+
+For the smFISH example, place `smart_seq_adata.h5ad` and `smfish.h5ad` in `data/`. Run `python train.py` from the repository root to generate `coef/smFISH_C.mat`, then open the notebook for gene reconstruction and cell-type localization.
 
 ## Acknowledgement
 Some implementations of metrics and the visualization in this Repo are based on [SpatialBenchmarking](https://github.com/QuKunLab/SpatialBenchmarking) and [GraphST](https://github.com/JinmiaoChenLab/GraphST)
