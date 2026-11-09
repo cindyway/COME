@@ -3,14 +3,14 @@ def get_default_config(data_name):
         return dict(
             dims=[84, 256, 128],
             pretrain_epochs=500,
-            epochs=70,
+            epochs=110,
             pre_lr=0.001,
             lr=0.001,
             batch_size=256,
-            weight_map=1,
-            weight_coef=0.001,
-            weight_ssim=1,
-            weight_con=1,
+            weight_map=0.1,
+            weight_coef=1e-6,
+            weight_ssim=0.01,
+            weight_con=0.01,
             tau=0.8,
 
         )
